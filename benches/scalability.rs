@@ -33,7 +33,7 @@ fn contains(c: &mut Criterion) {
         group.bench_function(BenchmarkId::new("precision", precision), |b| {
             b.iter_batched(
                 || {
-                    let item: u64 = rand::thread_rng().gen();
+                    let item: u64 = rand::rng().random();
 
                     let mut f = filter.clone();
                     f.insert(&item);

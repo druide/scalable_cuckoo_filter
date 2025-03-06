@@ -23,8 +23,7 @@ impl CuckooFilter {
         number_of_items_hint: usize,
         max_kicks: usize,
     ) -> Self {
-        let number_of_buckets_hint =
-            (number_of_items_hint + entries_per_bucket - 1) / entries_per_bucket;
+        let number_of_buckets_hint = number_of_items_hint.div_ceil(entries_per_bucket);
         let buckets = Buckets::new(
             fingerprint_bitwidth,
             entries_per_bucket,
@@ -103,9 +102,8 @@ impl CuckooFilter {
     #[inline]
     pub fn shrink_to_fit<H: Hasher + Clone, R: Rng>(&mut self, hasher: &H, rng: &mut R) {
         let entries_per_bucket = self.buckets.entries_per_bucket();
-        let shrunk_buckets_len = Buckets::required_number_of_buckets(
-            (self.item_count + entries_per_bucket - 1) / entries_per_bucket,
-        );
+        let shrunk_buckets_len =
+            Buckets::required_number_of_buckets(self.item_count.div_ceil(entries_per_bucket));
         if shrunk_buckets_len < self.buckets.len() {
             let mut shrunk_filter = CuckooFilter::new(
                 self.buckets.fingerprint_bitwidth(),
@@ -155,7 +153,7 @@ impl CuckooFilter {
         }
 
         let mut fingerprint = fingerprint;
-        let mut i = if rng.gen::<bool>() { i0 } else { i1 };
+        let mut i = if rng.random::<bool>() { i0 } else { i1 };
         let mut prev_i = i;
         for _ in 0..self.max_kicks {
             fingerprint = self.buckets.random_swap(rng, i, fingerprint);
@@ -198,7 +196,7 @@ impl ExceptionalItems {
     fn contains_kicked_out_entries(&self) -> bool {
         self.0
             .last()
-            .map_or(false, |&(fingerprint, _)| fingerprint != 0)
+            .is_some_and(|&(fingerprint, _)| fingerprint != 0)
     }
 
     #[inline]
