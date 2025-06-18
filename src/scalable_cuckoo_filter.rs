@@ -1,4 +1,4 @@
-use rand::{rngs::ThreadRng, Rng};
+use rand::rngs::ThreadRng;
 use siphasher::sip::SipHasher13;
 use std::hash::{Hash, Hasher};
 use std::marker::PhantomData;
@@ -18,7 +18,7 @@ pub struct ScalableCuckooFilterBuilder<H = DefaultHasher> {
     false_positive_probability: f64,
     entries_per_bucket: usize,
     max_kicks: usize,
-    hasher: H
+    hasher: H,
 }
 impl ScalableCuckooFilterBuilder<DefaultHasher> {
     /// Makes a new `ScalableCuckooFilterBuilder` instance.
@@ -28,7 +28,7 @@ impl ScalableCuckooFilterBuilder<DefaultHasher> {
             false_positive_probability: 0.001,
             entries_per_bucket: 4,
             max_kicks: 512,
-            hasher: SipHasher13::new()
+            hasher: SipHasher13::new(),
         }
     }
 }
@@ -85,7 +85,7 @@ impl<H: Hasher + Clone> ScalableCuckooFilterBuilder<H> {
             false_positive_probability: self.false_positive_probability,
             entries_per_bucket: self.entries_per_bucket,
             max_kicks: self.max_kicks,
-            hasher
+            hasher,
         }
     }
 
@@ -329,14 +329,11 @@ mod test {
 
     #[test]
     fn insert_works() {
-        use rand::{rngs::StdRng, SeedableRng};
-
         let mut seed = [0; 32];
         for i in 0..seed.len() {
             seed[i] = i as u8;
         }
 
-        let rng: StdRng = SeedableRng::from_seed(seed);
         let mut filter = ScalableCuckooFilterBuilder::new()
             .initial_capacity(100)
             .false_positive_probability(0.00001)
