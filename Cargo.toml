@@ -24,7 +24,7 @@ serde = { version = "1.0", default-features = false, optional = true, features =
 serde_bytes = { version = "0.11", optional = true }
 
 [dev-dependencies]
-criterion = "0.5"
+criterion = "0.6"
 mimalloc = { version = "0.1", default-features = false }
 serde_json = "1.0"
 
