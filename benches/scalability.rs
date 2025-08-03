@@ -1,6 +1,5 @@
 use criterion::*;
 use mimalloc::MiMalloc;
-
 use rand::Rng;
 use scalable_cuckoo_filter::ScalableCuckooFilter;
 

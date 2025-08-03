@@ -1,9 +1,10 @@
-use rand::rngs::ThreadRng;
-use siphasher::sip::SipHasher13;
-use std::hash::{Hash, Hasher};
-use std::marker::PhantomData;
-
 use crate::cuckoo_filter::CuckooFilter;
+use rand::{Rng, rngs::ThreadRng};
+use siphasher::sip::SipHasher13;
+use std::{
+    hash::{Hash, Hasher},
+    marker::PhantomData,
+};
 
 /// Default Hasher.
 pub type DefaultHasher = SipHasher13;
@@ -234,7 +235,7 @@ impl<T: Hash + ?Sized, H: Hasher + Clone> ScalableCuckooFilter<T, H> {
         }
     }
 
-    /// Allows insert the same item multiple times
+    /// Allows insert the same item multiple times.
     pub fn insert_duplicate(&mut self, item: &T) {
         let item_hash = crate::hash(&self.hasher, item);
         let last = self.filters.len() - 1;
@@ -244,10 +245,31 @@ impl<T: Hash + ?Sized, H: Hasher + Clone> ScalableCuckooFilter<T, H> {
         }
     }
 
+    /// Insert an item using the custom `Rng`.
+    pub fn insert_rng<R: Rng>(&mut self, item: &T, rng: &mut R) {
+        if self.contains(item) {
+            return;
+        }
+        let item_hash = crate::hash(&self.hasher, item);
+        let last = self.filters.len() - 1;
+        self.filters[last].insert(&self.hasher, rng, item_hash);
+        if self.filters[last].is_nearly_full() {
+            self.grow();
+        }
+    }
+
     /// Shrinks the capacity of this filter as much as possible.
     pub fn shrink_to_fit(&mut self) {
         for f in &mut self.filters {
             f.shrink_to_fit(&self.hasher, &mut rand::rng());
+        }
+    }
+
+    /// Shrinks the capacity of this filter as much as possible, using the
+    /// custom `Rng`.
+    pub fn shrink_to_fit_rng<R: Rng>(&mut self, rng: &mut R) {
+        for f in &mut self.filters {
+            f.shrink_to_fit(&self.hasher, rng);
         }
     }
 

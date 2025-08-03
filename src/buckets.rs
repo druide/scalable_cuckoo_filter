@@ -1,7 +1,5 @@
-use rand::Rng;
-
 use crate::bits::Bits;
-
+use rand::Rng;
 #[cfg(feature = "serde_support")]
 use serde::{Deserialize, Serialize};
 

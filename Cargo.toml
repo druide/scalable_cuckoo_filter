@@ -1,7 +1,8 @@
 [package]
 name = "scalable_cuckoo_filter"
-edition = "2021"
-version = "0.3.3"
+version = "0.4.0"
+edition = "2024"
+rust-version = "1.85"
 authors = ["Takeru Ohta <phjgt308@gmail.com>"]
 description = "A variant of Cuckoo Filter whose size automatically scales as necessary"
 homepage = "https://github.com/sile/scalable_cuckoo_filter"
@@ -14,9 +15,6 @@ license = "MIT"
 [features]
 serde_support = ["serde","serde_bytes"]
 
-[badges]
-coveralls = {repository = "sile/scalable_cuckoo_filter"}
-
 [dependencies]
 rand = "0.9"
 siphasher = "1"
@@ -24,7 +22,7 @@ serde = { version = "1.0", default-features = false, optional = true, features =
 serde_bytes = { version = "0.11", optional = true }
 
 [dev-dependencies]
-criterion = "0.6"
+criterion = "0.7"
 mimalloc = { version = "0.1", default-features = false }
 serde_json = "1.0"
 

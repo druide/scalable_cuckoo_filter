@@ -1,12 +1,8 @@
-use rand::Rng;
-use std::cmp;
-use std::hash::Hasher;
-use std::mem;
-
 use crate::buckets::Buckets;
-
+use rand::Rng;
 #[cfg(feature = "serde")]
 use serde::{Deserialize, Serialize};
+use std::{cmp, hash::Hasher, mem};
 
 #[derive(Debug, Clone)]
 #[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
